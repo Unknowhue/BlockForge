@@ -1,0 +1,2733 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#0b1117">
+
+<title>BlockForge</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+*{
+box-sizing:border-box;
+-webkit-tap-highlight-color:transparent;
+}
+
+body{
+margin:0;
+background:#0b1117;
+color:#fff;
+font-family:Arial,sans-serif;
+}
+
+button,input,textarea,select{
+font:inherit;
+}
+
+button{
+cursor:pointer;
+}
+
+#auth{
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:20px;
+background:radial-gradient(circle at top,#183b2a,#0b1117 60%);
+}
+
+.auth-card{
+width:100%;
+max-width:420px;
+padding:30px 22px;
+background:#141d25;
+border:1px solid #263743;
+border-radius:25px;
+box-shadow:0 20px 60px #0008;
+}
+
+.logo{
+text-align:center;
+font-size:45px;
+}
+
+.brand{
+text-align:center;
+font-size:32px;
+font-weight:900;
+}
+
+.tagline{
+text-align:center;
+color:#91a0ab;
+margin:8px 0 25px;
+}
+
+.input{
+width:100%;
+padding:14px;
+margin-bottom:12px;
+border:1px solid #30414e;
+border-radius:13px;
+background:#0e171e;
+color:white;
+outline:none;
+}
+
+.input:focus{
+border-color:#45d477;
+}
+
+.auth-btn{
+width:100%;
+padding:15px;
+margin-top:8px;
+border:0;
+border-radius:13px;
+color:white;
+font-weight:bold;
+}
+
+.primary{
+background:#32c968;
+}
+
+.secondary{
+background:#246cff;
+}
+
+.guest{
+background:#293742;
+}
+
+#authMessage{
+text-align:center;
+min-height:20px;
+margin-top:15px;
+color:#ffd166;
+font-size:14px;
+}
+
+#app{
+display:none;
+min-height:100vh;
+padding-bottom:80px;
+}
+
+.topbar{
+position:sticky;
+top:0;
+z-index:10;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px;
+background:#0b1117ee;
+backdrop-filter:blur(15px);
+border-bottom:1px solid #1e2a33;
+}
+
+.top-brand{
+font-size:22px;
+font-weight:900;
+}
+
+.top-brand span{
+color:#45d477;
+}
+
+.profile-btn{
+width:40px;
+height:40px;
+border:0;
+border-radius:50%;
+background:#1d2a34;
+color:white;
+font-size:18px;
+}
+
+.content{
+max-width:950px;
+margin:auto;
+padding:18px 15px;
+}
+
+.page{
+display:none;
+}
+
+.page.active{
+display:block;
+}
+
+.hero{
+padding:23px;
+border-radius:22px;
+background:linear-gradient(
+135deg,
+#183e29,
+#12251e 55%,
+#17232b
+);
+border:1px solid #27583a;
+}
+
+.hero h1{
+margin:0 0 8px;
+font-size:28px;
+}
+
+.hero p{
+color:#b7c6bd;
+line-height:1.5;
+}
+
+.hero button{
+background:#45d477;
+border:0;
+padding:12px 18px;
+border-radius:12px;
+font-weight:900;
+}
+
+.search-box{
+margin-top:20px;
+}
+
+.section-title{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin:25px 3px 13px;
+}
+
+.section-title h2{
+margin:0;
+font-size:20px;
+}
+
+.categories{
+display:flex;
+gap:10px;
+overflow-x:auto;
+scrollbar-width:none;
+}
+
+.categories::-webkit-scrollbar{
+display:none;
+}
+
+.category{
+flex:0 0 auto;
+padding:11px 16px;
+border-radius:20px;
+border:1px solid #2b3943;
+background:#151f27;
+color:#dce4e8;
+}
+
+.category.active{
+background:#45d477;
+color:#07120b;
+border-color:#45d477;
+font-weight:bold;
+}
+
+.mods-grid{
+display:grid;
+grid-template-columns:repeat(2,minmax(0,1fr));
+gap:13px;
+}
+
+.mod-card{
+background:#151e26;
+border:1px solid #26343e;
+border-radius:17px;
+overflow:hidden;
+}
+
+.mod-image{
+height:110px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:45px;
+background:linear-gradient(
+135deg,
+#263f32,
+#19252d
+);
+}
+
+.mod-info{
+padding:12px;
+}
+
+.mod-name{
+font-weight:bold;
+margin-bottom:5px;
+word-break:break-word;
+}
+
+.mod-description{
+color:#aab7bf;
+font-size:12px;
+line-height:1.4;
+margin-bottom:8px;
+}
+
+.mod-meta{
+color:#84939e;
+font-size:12px;
+margin-bottom:10px;
+line-height:1.5;
+}
+
+.download-btn,
+.delete-btn{
+width:100%;
+padding:10px;
+border:0;
+border-radius:9px;
+color:white;
+font-weight:bold;
+}
+
+.download-btn{
+background:#263640;
+}
+
+.delete-btn{
+margin-top:7px;
+background:#a92f37;
+}
+
+.empty{
+grid-column:1/-1;
+text-align:center;
+color:#788792;
+padding:35px 10px;
+}
+
+.form-card,
+.profile-card{
+background:#151e26;
+border:1px solid #26343e;
+border-radius:18px;
+padding:18px;
+}
+
+label{
+display:block;
+margin:12px 0 7px;
+color:#b7c3ca;
+font-size:14px;
+}
+
+textarea{
+min-height:120px;
+resize:vertical;
+}
+
+select{
+width:100%;
+padding:14px;
+border:1px solid #30414e;
+border-radius:13px;
+background:#0e171e;
+color:white;
+}
+
+.file-input{
+width:100%;
+padding:16px;
+border:1px dashed #45d477;
+border-radius:13px;
+background:#0e171e;
+color:#b8c5cc;
+}
+
+.file-input::file-selector-button{
+padding:10px 14px;
+margin-right:10px;
+border:0;
+border-radius:9px;
+background:#45d477;
+color:#07120b;
+font-weight:bold;
+}
+
+.file-name{
+margin-top:8px;
+color:#45d477;
+font-size:13px;
+word-break:break-all;
+}
+
+.submit-upload{
+width:100%;
+margin-top:18px;
+padding:15px;
+border:0;
+border-radius:13px;
+background:#45d477;
+color:#07120b;
+font-weight:900;
+}
+
+.submit-upload:disabled{
+opacity:.5;
+}
+
+#uploadMessage{
+text-align:center;
+margin-top:15px;
+color:#ffd166;
+line-height:1.5;
+}
+
+.upload-progress{
+width:100%;
+height:12px;
+margin-top:15px;
+background:#0b1117;
+border-radius:20px;
+overflow:hidden;
+display:none;
+}
+
+.upload-progress-bar{
+width:0%;
+height:100%;
+background:#45d477;
+transition:width:.2s ease;
+}
+
+.upload-percent{
+text-align:center;
+margin-top:7px;
+color:#91a0ab;
+font-size:13px;
+display:none;
+}
+
+.avatar{
+width:75px;
+height:75px;
+margin:auto;
+border-radius:50%;
+background:#263640;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:30px;
+}
+
+.profile-card{
+text-align:center;
+}
+
+.profile-menu{
+display:grid;
+gap:10px;
+margin-top:20px;
+}
+
+.profile-menu button{
+padding:13px;
+border:0;
+border-radius:11px;
+background:#263640;
+color:white;
+font-weight:bold;
+}
+
+.logout-btn{
+width:100%;
+margin-top:20px;
+padding:13px;
+border:0;
+border-radius:11px;
+background:#c93434;
+color:white;
+font-weight:bold;
+}
+
+.bottom-nav{
+position:fixed;
+z-index:20;
+bottom:0;
+left:0;
+right:0;
+height:68px;
+background:#111920f5;
+backdrop-filter:blur(15px);
+border-top:1px solid #26343e;
+display:flex;
+justify-content:space-around;
+align-items:center;
+}
+
+.nav-btn{
+border:0;
+background:transparent;
+color:#75838d;
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:4px;
+font-size:11px;
+}
+
+.nav-icon{
+font-size:21px;
+}
+
+.nav-btn.active{
+color:#45d477;
+}
+
+/* =========================
+   MODALES
+========================= */
+
+.custom-modal{
+position:fixed;
+inset:0;
+z-index:9999;
+display:none;
+align-items:center;
+justify-content:center;
+padding:20px;
+background:#000b;
+backdrop-filter:blur(9px);
+}
+
+.custom-modal.show{
+display:flex;
+animation:fadeIn .18s ease;
+}
+
+.modal-box{
+width:100%;
+max-width:390px;
+padding:26px;
+border-radius:24px;
+background:#151e26;
+border:1px solid #34434e;
+box-shadow:0 25px 80px #000c;
+text-align:center;
+animation:popIn .2s ease;
+}
+
+.modal-icon{
+width:72px;
+height:72px;
+margin:auto;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:32px;
+}
+
+.delete-icon{
+background:#63272b;
+}
+
+.download-icon{
+background:#193b2a;
+}
+
+.modal-box h2{
+margin:17px 0 8px;
+}
+
+.modal-box p{
+margin:0;
+color:#9eabb4;
+font-size:14px;
+line-height:1.5;
+}
+
+.modal-buttons{
+display:flex;
+gap:10px;
+margin-top:23px;
+}
+
+.modal-buttons button{
+flex:1;
+padding:13px;
+border:0;
+border-radius:12px;
+font-weight:bold;
+}
+
+.cancel-btn{
+background:#293742;
+color:white;
+}
+
+.delete-confirm{
+background:#d9363e;
+color:white;
+}
+
+.download-confirm{
+background:#32c968;
+color:#061109;
+}
+
+.modal-buttons button:active{
+transform:scale(.96);
+}
+
+@keyframes fadeIn{
+
+from{
+opacity:0;
+}
+
+to{
+opacity:1;
+}
+
+}
+
+@keyframes popIn{
+
+from{
+opacity:0;
+transform:scale(.9);
+}
+
+to{
+opacity:1;
+transform:scale(1);
+}
+
+}
+
+@media(min-width:700px){
+
+.mods-grid{
+grid-template-columns:repeat(4,minmax(0,1fr));
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+     LOGIN
+========================= -->
+
+<section id="auth">
+
+<div class="auth-card">
+
+<div class="logo">⚒️</div>
+
+<div class="brand">
+BlockForge
+</div>
+
+<div class="tagline">
+Mods • Texture Packs • Maps • Add-ons
+</div>
+
+<input
+id="email"
+class="input"
+type="email"
+placeholder="Correo electrónico"
+>
+
+<input
+id="password"
+class="input"
+type="password"
+placeholder="Contraseña"
+>
+
+<button
+class="auth-btn primary"
+onclick="login()"
+>
+Iniciar sesión
+</button>
+
+<button
+class="auth-btn secondary"
+onclick="register()"
+>
+Crear cuenta
+</button>
+
+<button
+class="auth-btn guest"
+onclick="continueAsGuest()"
+>
+Continuar sin cuenta
+</button>
+
+<div id="authMessage"></div>
+
+</div>
+</section>
+
+
+<!-- =========================
+     APP
+========================= -->
+
+<section id="app">
+
+<header class="topbar">
+
+<div class="top-brand">
+⚒️ Block<span>Forge</span>
+</div>
+
+<button
+class="profile-btn"
+onclick="showPage('profile')"
+>
+👤
+</button>
+
+</header>
+
+
+<main class="content">
+
+
+<!-- HOME -->
+
+<div id="homePage" class="page active">
+
+<div class="hero">
+
+<h1>
+Bienvenido a BlockForge ⚒️
+</h1>
+
+<p>
+Descubre mods, texture packs,
+mapas y add-ons creados
+por la comunidad.
+</p>
+
+<button onclick="showPage('upload')">
+📤 Subir contenido
+</button>
+
+</div>
+
+<div class="search-box">
+
+<input
+id="searchInput"
+class="input"
+placeholder="🔎 Buscar contenido..."
+oninput="loadMods()"
+>
+
+</div>
+
+<div class="section-title">
+<h2>Categorías</h2>
+</div>
+
+<div class="categories">
+
+<button
+class="category active"
+onclick="selectCategory('all',this)"
+>
+🔥 Todo
+</button>
+
+<button
+class="category"
+onclick="selectCategory('mods',this)"
+>
+⚔️ Mods
+</button>
+
+<button
+class="category"
+onclick="selectCategory('textures',this)"
+>
+🎨 Texturas
+</button>
+
+<button
+class="category"
+onclick="selectCategory('maps',this)"
+>
+🌎 Mapas
+</button>
+
+<button
+class="category"
+onclick="selectCategory('addons',this)"
+>
+🧩 Add-ons
+</button>
+
+</div>
+
+<div class="section-title">
+<h2>🔥 Contenido</h2>
+</div>
+
+<div
+id="modsGrid"
+class="mods-grid"
+>
+<div class="empty">
+⏳ Cargando contenido...
+</div>
+</div>
+
+</div>
+
+
+<!-- SUBIR -->
+
+<div id="uploadPage" class="page">
+
+<div class="section-title">
+<h2>📤 Subir contenido</h2>
+</div>
+
+<div class="form-card">
+
+<label>Nombre</label>
+
+<input
+id="modName"
+class="input"
+placeholder="Ej. Ultra Texture Pack"
+>
+
+<label>Descripción</label>
+
+<textarea
+id="modDescription"
+class="input"
+placeholder="Describe tu contenido..."
+></textarea>
+
+<label>Categoría</label>
+
+<select id="modCategory">
+
+<option value="mods">⚔️ Mod</option>
+<option value="textures">🎨 Texture Pack</option>
+<option value="maps">🌎 Mapa</option>
+<option value="addons">🧩 Add-on</option>
+
+</select>
+
+<label>Archivo</label>
+
+<input
+id="modFile"
+class="file-input"
+type="file"
+accept="*/*"
+>
+
+<div
+id="selectedFile"
+class="file-name"
+></div>
+
+<div
+id="uploadProgress"
+class="upload-progress"
+>
+
+<div
+id="uploadProgressBar"
+class="upload-progress-bar"
+></div>
+
+</div>
+
+<div
+id="uploadPercent"
+class="upload-percent"
+>
+0%
+</div>
+
+<button
+id="uploadButton"
+class="submit-upload"
+onclick="uploadMod()"
+>
+🚀 Subir a BlockForge
+</button>
+
+<div id="uploadMessage"></div>
+
+</div>
+
+</div>
+
+
+<!-- DESCARGAS -->
+
+<div id="downloadsPage" class="page">
+
+<div class="section-title">
+<h2>📥 Mis descargas</h2>
+</div>
+
+<div
+id="downloadsGrid"
+class="mods-grid"
+>
+<div class="empty">
+⏳ Cargando...
+</div>
+</div>
+
+</div>
+
+
+<!-- MIS MODS -->
+
+<div id="myModsPage" class="page">
+
+<div class="section-title">
+<h2>📦 Mis mods</h2>
+</div>
+
+<div
+id="myModsGrid"
+class="mods-grid"
+>
+<div class="empty">
+⏳ Cargando...
+</div>
+</div>
+
+</div>
+
+
+<!-- PERFIL -->
+
+<div id="profilePage" class="page">
+
+<div class="section-title">
+<h2>👤 Mi perfil</h2>
+</div>
+
+<div class="profile-card">
+
+<div class="avatar">
+👤
+</div>
+
+<h2 id="profileEmail">
+Usuario
+</h2>
+
+<p>
+Miembro de BlockForge
+</p>
+
+<div class="profile-menu">
+
+<button onclick="showPage('downloads')">
+📥 Mis descargas
+</button>
+
+<button onclick="showPage('mymods')">
+📦 Mis mods
+</button>
+
+<button onclick="showPage('upload')">
+➕ Subir contenido
+</button>
+
+</div>
+
+<button
+class="logout-btn"
+onclick="logout()"
+>
+Cerrar sesión
+</button>
+
+</div>
+
+</div>
+
+</main>
+
+
+<nav class="bottom-nav">
+
+<button
+class="nav-btn active"
+onclick="showPage('home')"
+>
+<span class="nav-icon">🏠</span>
+Inicio
+</button>
+
+<button
+class="nav-btn"
+onclick="focusSearch()"
+>
+<span class="nav-icon">🔍</span>
+Buscar
+</button>
+
+<button
+id="navUpload"
+class="nav-btn"
+onclick="showPage('upload')"
+>
+<span class="nav-icon">➕</span>
+Subir
+</button>
+
+<button
+class="nav-btn"
+onclick="showPage('downloads')"
+>
+<span class="nav-icon">📥</span>
+Descargas
+</button>
+
+<button
+class="nav-btn"
+onclick="showPage('profile')"
+>
+<span class="nav-icon">👤</span>
+Perfil
+</button>
+
+</nav>
+
+</section>
+
+
+<!-- =========================
+     MODAL ELIMINAR
+========================= -->
+
+<div
+id="deleteModal"
+class="custom-modal"
+>
+
+<div class="modal-box">
+
+<div class="modal-icon delete-icon">
+🗑️
+</div>
+
+<h2>
+¿Eliminar contenido?
+</h2>
+
+<p id="deleteModalText">
+Este archivo será eliminado de BlockForge y del almacenamiento.
+</p>
+
+<div class="modal-buttons">
+
+<button
+class="cancel-btn"
+onclick="closeDeleteModal()"
+>
+Cancelar
+</button>
+
+<button
+class="delete-confirm"
+onclick="confirmDelete()"
+>
+🗑️ Eliminar
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =========================
+     MODAL DESCARGAR
+========================= -->
+
+<div
+id="downloadModal"
+class="custom-modal"
+>
+
+<div class="modal-box">
+
+<div class="modal-icon download-icon">
+⬇️
+</div>
+
+<h2>
+¿Descargar contenido?
+</h2>
+
+<p id="downloadModalText">
+Se preparará el archivo para descargar.
+</p>
+
+<div class="modal-buttons">
+
+<button
+class="cancel-btn"
+onclick="closeDownloadModal()"
+>
+Cancelar
+</button>
+
+<button
+class="download-confirm"
+onclick="confirmDownload()"
+>
+⬇️ Descargar
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   SUPABASE
+========================= */
+
+const SUPABASE_URL =
+"https://xdvgyhrzohhmzvalytyb.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_koqa0H7taiCafaQovJSl-A_h2SsVmWy";
+
+let supabaseClient=null;
+let currentUser=null;
+let selectedCategory="all";
+
+let deleteModId=null;
+let downloadModId=null;
+
+
+/* =========================
+   INICIAR SUPABASE
+========================= */
+
+function initSupabase(){
+
+try{
+
+supabaseClient=
+window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
+return true;
+
+}catch(error){
+
+console.error(error);
+
+return false;
+
+}
+
+}
+
+
+/* =========================
+   LOGIN
+========================= */
+
+async function login(){
+
+const email=
+document.getElementById("email")
+.value.trim();
+
+const password=
+document.getElementById("password")
+.value;
+
+if(!email||!password){
+
+document.getElementById("authMessage")
+.textContent=
+"Escribe correo y contraseña.";
+
+return;
+
+}
+
+document.getElementById("authMessage")
+.textContent=
+"⏳ Iniciando sesión...";
+
+try{
+
+const result=
+await supabaseClient.auth
+.signInWithPassword({
+
+email,
+password
+
+});
+
+if(result.error){
+
+document.getElementById("authMessage")
+.textContent=
+"❌ "+result.error.message;
+
+return;
+
+}
+
+currentUser=
+result.data.user;
+
+openApp();
+
+}catch(error){
+
+console.error(error);
+
+document.getElementById("authMessage")
+.textContent=
+"❌ Error de conexión.";
+
+}
+
+}
+
+
+/* =========================
+   REGISTRO
+========================= */
+
+async function register(){
+
+const email=
+document.getElementById("email")
+.value.trim();
+
+const password=
+document.getElementById("password")
+.value;
+
+if(!email||!password){
+
+document.getElementById("authMessage")
+.textContent=
+"Escribe correo y contraseña.";
+
+return;
+
+}
+
+if(password.length<6){
+
+document.getElementById("authMessage")
+.textContent=
+"❌ La contraseña debe tener mínimo 6 caracteres.";
+
+return;
+
+}
+
+document.getElementById("authMessage")
+.textContent=
+"⏳ Creando cuenta...";
+
+try{
+
+const result=
+await supabaseClient.auth.signUp({
+
+email,
+password
+
+});
+
+if(result.error){
+
+document.getElementById("authMessage")
+.textContent=
+"❌ "+result.error.message;
+
+return;
+
+}
+
+if(result.data.session){
+
+currentUser=
+result.data.user;
+
+openApp();
+
+}else{
+
+document.getElementById("authMessage")
+.textContent=
+"✅ Cuenta creada. Revisa tu correo.";
+
+}
+
+}catch(error){
+
+console.error(error);
+
+document.getElementById("authMessage")
+.textContent=
+"❌ Error de conexión.";
+
+}
+
+}
+
+
+/* =========================
+   INVITADO
+========================= */
+
+function continueAsGuest(){
+
+currentUser=null;
+
+openApp();
+
+}
+
+
+/* =========================
+   ABRIR APP
+========================= */
+
+function openApp(){
+
+document.getElementById("auth")
+.style.display="none";
+
+document.getElementById("app")
+.style.display="block";
+
+if(currentUser){
+
+document.getElementById("profileEmail")
+.textContent=
+currentUser.email;
+
+document.getElementById("navUpload")
+.style.display="flex";
+
+}else{
+
+document.getElementById("profileEmail")
+.textContent="Invitado";
+
+document.getElementById("navUpload")
+.style.display="none";
+
+}
+
+loadMods();
+
+}
+
+
+/* =========================
+   NAVEGACIÓN
+========================= */
+
+function showPage(page){
+
+document.querySelectorAll(".page")
+.forEach(function(p){
+
+p.classList.remove("active");
+
+});
+
+if(page==="home"){
+
+document.getElementById("homePage")
+.classList.add("active");
+
+loadMods();
+
+}
+
+if(page==="upload"){
+
+if(!currentUser){
+
+alert(
+"🔒 Inicia sesión para subir contenido."
+);
+
+return;
+
+}
+
+document.getElementById("uploadPage")
+.classList.add("active");
+
+}
+
+if(page==="downloads"){
+
+document.getElementById("downloadsPage")
+.classList.add("active");
+
+loadDownloads();
+
+}
+
+if(page==="mymods"){
+
+if(!currentUser){
+
+alert(
+"🔒 Inicia sesión para ver tus mods."
+);
+
+return;
+
+}
+
+document.getElementById("myModsPage")
+.classList.add("active");
+
+loadMyMods();
+
+}
+
+if(page==="profile"){
+
+document.getElementById("profilePage")
+.classList.add("active");
+
+}
+
+}
+
+
+/* =========================
+   BÚSQUEDA
+========================= */
+
+function focusSearch(){
+
+showPage("home");
+
+setTimeout(function(){
+
+const input=
+document.getElementById("searchInput");
+
+input.focus();
+
+input.scrollIntoView({
+behavior:"smooth",
+block:"center"
+});
+
+},100);
+
+}
+
+
+/* =========================
+   CATEGORÍAS
+========================= */
+
+function selectCategory(category,button){
+
+selectedCategory=category;
+
+document.querySelectorAll(".category")
+.forEach(function(b){
+
+b.classList.remove("active");
+
+});
+
+button.classList.add("active");
+
+loadMods();
+
+}
+
+
+/* =========================
+   ESCAPAR HTML
+========================= */
+
+function escapeHTML(text){
+
+return String(text||"")
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
+
+}
+
+
+/* =========================
+   NOMBRE CATEGORÍA
+========================= */
+
+function categoryName(category){
+
+const names={
+
+mods:"⚔️ Mod",
+textures:"🎨 Texture Pack",
+maps:"🌎 Mapa",
+addons:"🧩 Add-on"
+
+};
+
+return names[category]||"Contenido";
+
+}
+
+
+/* =========================
+   CARGAR MODS
+========================= */
+
+async function loadMods(){
+
+if(!supabaseClient)
+return;
+
+const grid=
+document.getElementById("modsGrid");
+
+grid.innerHTML=
+'<div class="empty">⏳ Cargando...</div>';
+
+let query=
+supabaseClient
+.from("mods")
+.select("*")
+.eq("status","approved")
+.order(
+"created_at",
+{ascending:false}
+);
+
+if(selectedCategory!=="all"){
+
+query=query.eq(
+"category",
+selectedCategory
+);
+
+}
+
+const search=
+document.getElementById("searchInput")
+.value.trim();
+
+if(search){
+
+query=query.ilike(
+"name",
+"%"+search+"%"
+);
+
+}
+
+try{
+
+const result=await query;
+
+if(result.error){
+
+console.error(result.error);
+
+grid.innerHTML=
+'<div class="empty">❌ Error cargando contenido.</div>';
+
+return;
+
+}
+
+const data=result.data||[];
+
+if(data.length===0){
+
+grid.innerHTML=
+'<div class="empty">No hay contenido disponible.</div>';
+
+return;
+
+}
+
+grid.innerHTML="";
+
+data.forEach(function(mod){
+
+grid.appendChild(
+createModCard(mod,false)
+);
+
+});
+
+}catch(error){
+
+console.error(error);
+
+grid.innerHTML=
+'<div class="empty">❌ Error de conexión.</div>';
+
+}
+
+}
+
+
+/* =========================
+   TARJETA
+========================= */
+
+function createModCard(mod,showDelete){
+
+const card=
+document.createElement("article");
+
+card.className="mod-card";
+
+let icon="⚒️";
+
+if(mod.category==="textures")
+icon="🎨";
+
+if(mod.category==="maps")
+icon="🌎";
+
+if(mod.category==="addons")
+icon="🧩";
+
+let status="";
+
+if(showDelete){
+
+status=`
+<span class="status ${escapeHTML(mod.status||"pending")}">
+${escapeHTML(mod.status||"pending")}
+</span>
+`;
+
+}
+
+card.innerHTML=`
+
+<div class="mod-image">
+${icon}
+</div>
+
+<div class="mod-info">
+
+<div class="mod-name">
+${escapeHTML(mod.name)}
+</div>
+
+<div class="mod-description">
+${escapeHTML(mod.description||"Sin descripción")}
+</div>
+
+<div class="mod-meta">
+
+${categoryName(mod.category)}
+
+<br>
+
+📥 ${mod.downloads||0} descargas
+
+${status}
+
+</div>
+
+${
+mod.status==="approved"||!showDelete
+?
+`
+<button
+class="download-btn"
+onclick="downloadMod('${mod.id}')"
+>
+⬇️ Descargar
+</button>
+`
+:""
+}
+
+${
+showDelete
+?
+`
+<button
+class="delete-btn"
+onclick="deleteMod('${mod.id}')"
+>
+🗑️ Eliminar
+</button>
+`
+:""
+}
+
+</div>
+
+`;
+
+return card;
+
+}
+
+
+/* =========================
+   ARCHIVO SELECCIONADO
+========================= */
+
+function showSelectedFile(){
+
+const input=
+document.getElementById("modFile");
+
+const output=
+document.getElementById("selectedFile");
+
+if(!input.files.length){
+
+output.textContent="";
+return;
+
+}
+
+const file=input.files[0];
+
+const size=
+(file.size/(1024*1024))
+.toFixed(2);
+
+output.textContent=
+"📦 "+file.name+
+" • "+size+" MB";
+
+}
+
+document.getElementById("modFile")
+.addEventListener(
+"change",
+showSelectedFile
+);
+/* =========================
+   SUBIR MOD
+========================= */
+
+async function uploadMod(){
+
+if(!currentUser){
+
+alert("🔒 Inicia sesión para subir contenido.");
+return;
+
+}
+
+const message=
+document.getElementById("uploadMessage");
+
+const button=
+document.getElementById("uploadButton");
+
+const progress=
+document.getElementById("uploadProgress");
+
+const progressBar=
+document.getElementById("uploadProgressBar");
+
+const percent=
+document.getElementById("uploadPercent");
+
+const name=
+document.getElementById("modName")
+.value.trim();
+
+const description=
+document.getElementById("modDescription")
+.value.trim();
+
+const category=
+document.getElementById("modCategory")
+.value;
+
+const file=
+document.getElementById("modFile")
+.files[0];
+
+if(!name){
+
+message.textContent="❌ Escribe un nombre.";
+return;
+
+}
+
+if(!file){
+
+message.textContent="❌ Selecciona un archivo.";
+return;
+
+}
+
+const allowed=[
+"mcpack",
+"mcaddon",
+"mcworld",
+"zip"
+];
+
+const parts=file.name.split(".");
+
+const extension=
+parts.length>1
+?parts.pop().toLowerCase()
+:"";
+
+if(!allowed.includes(extension)){
+
+message.textContent=
+"❌ Solo se permiten .mcpack, .mcaddon, .mcworld y .zip.";
+
+return;
+
+}
+
+if(file.size>200*1024*1024){
+
+message.textContent=
+"❌ El archivo supera los 200 MB.";
+
+return;
+
+}
+
+button.disabled=true;
+button.textContent="⏳ Subiendo...";
+
+message.textContent="Subiendo archivo...";
+
+progress.style.display="block";
+percent.style.display="block";
+
+progressBar.style.width="5%";
+percent.textContent="5%";
+
+const safeName =
+file.name
+.normalize("NFD")
+.replace(/[\u0300-\u036f]/g,"")
+.replace(/[^a-zA-Z0-9._-]/g,"_");
+
+const filePath =
+`${currentUser.id}/${Date.now()}_${safeName}`;
+
+let progressTimer;
+
+try{
+
+const uploadPromise=
+supabaseClient
+.storage
+.from("minecraft-files")
+.upload(
+filePath,
+file,
+{
+upsert:false,
+contentType:
+file.type||
+"application/octet-stream"
+}
+);
+
+let fakeProgress=5;
+
+progressTimer=setInterval(function(){
+
+if(fakeProgress<90){
+
+fakeProgress+=2;
+
+progressBar.style.width=
+fakeProgress+"%";
+
+percent.textContent=
+fakeProgress+"%";
+
+}
+
+},500);
+
+const storageResult=
+await uploadPromise;
+
+clearInterval(progressTimer);
+
+if(storageResult.error){
+
+throw storageResult.error;
+
+}
+
+progressBar.style.width="95%";
+percent.textContent="95%";
+
+message.textContent=
+"📦 Archivo subido. Registrando contenido...";
+
+const dbResult=
+await supabaseClient
+.from("mods")
+.insert({
+
+user_id:currentUser.id,
+
+name:name,
+
+description:description,
+
+file_path:filePath,
+
+file_type:extension,
+
+category:category,
+
+status:"pending",
+
+downloads:0
+
+});
+
+if(dbResult.error){
+
+await supabaseClient
+.storage
+.from("minecraft-files")
+.remove([filePath]);
+
+throw dbResult.error;
+
+}
+
+progressBar.style.width="100%";
+percent.textContent="100%";
+
+message.textContent=
+"✅ ¡Subido! Quedó pendiente de revisión.";
+
+document.getElementById("modName").value="";
+document.getElementById("modDescription").value="";
+document.getElementById("modFile").value="";
+document.getElementById("selectedFile").textContent="";
+
+setTimeout(function(){
+
+progress.style.display="none";
+percent.style.display="none";
+progressBar.style.width="0%";
+
+button.disabled=false;
+button.textContent="🚀 Subir a BlockForge";
+
+},1500);
+
+}catch(error){
+
+if(progressTimer)
+clearInterval(progressTimer);
+
+console.error(error);
+
+progress.style.display="none";
+percent.style.display="none";
+
+button.disabled=false;
+button.textContent="🚀 Subir a BlockForge";
+
+message.textContent=
+"❌ Error: "+
+(error.message||"Error desconocido");
+
+}
+
+}
+
+
+/* =========================
+   MODAL DE DESCARGA
+========================= */
+
+function downloadMod(id){
+
+downloadModId=id;
+
+const modal=
+document.getElementById("downloadModal");
+
+const text=
+document.getElementById("downloadModalText");
+
+text.textContent=
+"Preparando información del archivo...";
+
+modal.classList.add("show");
+
+loadDownloadInfo(id);
+
+}
+
+
+async function loadDownloadInfo(id){
+
+try{
+
+const result=
+await supabaseClient
+.from("mods")
+.select("name,file_type")
+.eq("id",id)
+.eq("status","approved")
+.single();
+
+if(result.error||!result.data){
+
+document.getElementById(
+"downloadModalText"
+).textContent=
+"❌ Este archivo ya no está disponible.";
+
+return;
+
+}
+
+const mod=result.data;
+
+document.getElementById(
+"downloadModalText"
+).textContent=
+"Vas a descargar «"+
+mod.name+
+"» ("+
+mod.file_type.toUpperCase()+
+"). Asegúrate de confiar en el contenido antes de abrirlo.";
+
+}catch(error){
+
+console.error(error);
+
+document.getElementById(
+"downloadModalText"
+).textContent=
+"Se preparará el archivo para descargar.";
+
+}
+
+}
+
+
+async function confirmDownload(){
+
+if(!downloadModId)
+return;
+
+const id=downloadModId;
+
+closeDownloadModal();
+
+try{
+
+const result=
+await supabaseClient
+.from("mods")
+.select("*")
+.eq("id",id)
+.eq("status","approved")
+.single();
+
+if(result.error||!result.data){
+
+alert("❌ Este archivo ya no está disponible.");
+return;
+
+}
+
+const mod=result.data;
+
+
+/* Crear enlace temporal */
+
+const signedResult=
+await supabaseClient
+.storage
+.from("minecraft-files")
+.createSignedUrl(
+mod.file_path,
+3600
+);
+
+if(
+signedResult.error||
+!signedResult.data||
+!signedResult.data.signedUrl
+){
+
+console.error(signedResult.error);
+
+alert(
+"❌ No se pudo preparar la descarga."
+);
+
+return;
+
+}
+
+
+/* Aumentar contador */
+
+const updateResult=
+await supabaseClient
+.from("mods")
+.update({
+
+downloads:
+(mod.downloads||0)+1
+
+})
+.eq("id",id);
+
+if(updateResult.error){
+
+console.warn(
+"Contador:",
+updateResult.error
+);
+
+}
+
+
+/* Guardar descarga */
+
+if(currentUser){
+
+const downloadResult=
+await supabaseClient
+.from("downloads")
+.insert({
+
+user_id:currentUser.id,
+mod_id:mod.id
+
+});
+
+if(downloadResult.error){
+
+console.warn(
+"Mis descargas:",
+downloadResult.error
+);
+
+}
+
+}
+
+
+/*
+Usar un enlace real de descarga.
+
+El navegador/Android decidirá cómo
+manejar el archivo.
+*/
+
+const link=
+document.createElement("a");
+
+link.href=
+signedResult.data.signedUrl;
+
+link.download=
+mod.name||
+"BlockForge";
+
+link.target="_blank";
+
+link.rel="noopener";
+
+document.body.appendChild(link);
+
+link.click();
+
+link.remove();
+
+}catch(error){
+
+console.error(error);
+
+alert(
+"❌ Error al descargar:\n"+
+(error.message||"Error desconocido")
+);
+
+}
+
+}
+
+
+function closeDownloadModal(){
+
+document
+.getElementById("downloadModal")
+.classList.remove("show");
+
+downloadModId=null;
+
+}
+
+
+/* =========================
+   MODAL DE ELIMINACIÓN
+========================= */
+
+function deleteMod(id){
+
+if(!currentUser){
+
+alert(
+"🔒 Inicia sesión para eliminar contenido."
+);
+
+return;
+
+}
+
+deleteModId=id;
+
+const modal=
+document.getElementById("deleteModal");
+
+const text=
+document.getElementById("deleteModalText");
+
+text.textContent=
+"Comprobando el contenido...";
+
+modal.classList.add("show");
+
+loadDeleteInfo(id);
+
+}
+
+
+async function loadDeleteInfo(id){
+
+try{
+
+const result=
+await supabaseClient
+.from("mods")
+.select("name")
+.eq("id",id)
+.eq("user_id",currentUser.id)
+.single();
+
+if(result.error||!result.data){
+
+document.getElementById(
+"deleteModalText"
+).textContent=
+"❌ No se encontró este contenido o no te pertenece.";
+
+return;
+
+}
+
+document.getElementById(
+"deleteModalText"
+).textContent=
+"«"+
+result.data.name+
+"» será eliminado de BlockForge y del almacenamiento. Esta acción no se puede deshacer.";
+
+}catch(error){
+
+console.error(error);
+
+document.getElementById(
+"deleteModalText"
+).textContent=
+"Este archivo será eliminado permanentemente.";
+
+}
+
+}
+
+
+async function confirmDelete(){
+
+if(!deleteModId)
+return;
+
+const id=deleteModId;
+
+closeDeleteModal();
+
+if(!currentUser){
+
+alert(
+"🔒 Necesitas iniciar sesión."
+);
+
+return;
+
+}
+
+try{
+
+/* Buscar mod */
+
+const result=
+await supabaseClient
+.from("mods")
+.select(
+"id,user_id,file_path,name"
+)
+.eq("id",id)
+.eq(
+"user_id",
+currentUser.id
+)
+.single();
+
+if(result.error||!result.data){
+
+alert(
+"❌ No se encontró el contenido o no te pertenece."
+);
+
+return;
+
+}
+
+const mod=result.data;
+
+
+/* Eliminar archivo de Storage */
+
+const storage=
+await supabaseClient
+.storage
+.from("minecraft-files")
+.remove([
+mod.file_path
+]);
+
+if(storage.error){
+
+console.error(storage.error);
+
+alert(
+"❌ No se pudo eliminar el archivo del almacenamiento:\n"+
+storage.error.message
+);
+
+return;
+
+}
+
+
+/* Eliminar registros de descargas */
+
+const downloads=
+await supabaseClient
+.from("downloads")
+.delete()
+.eq("mod_id",id);
+
+if(downloads.error){
+
+console.warn(
+"Descargas relacionadas:",
+downloads.error
+);
+
+}
+
+
+/* Eliminar registro de mods */
+
+const deleted=
+await supabaseClient
+.from("mods")
+.delete()
+.eq("id",id)
+.eq(
+"user_id",
+currentUser.id
+)
+.select();
+
+if(deleted.error){
+
+console.error(deleted.error);
+
+alert(
+"❌ No se pudo eliminar el registro:\n"+
+deleted.error.message
+);
+
+return;
+
+}
+
+if(!deleted.data||
+deleted.data.length===0){
+
+alert(
+"❌ Supabase no permitió eliminar el registro.\n\n"+
+"Comprueba la política DELETE de la tabla mods."
+);
+
+return;
+
+}
+
+alert(
+"✅ «"+
+mod.name+
+"» fue eliminado correctamente."
+);
+
+loadMyMods();
+loadMods();
+
+}catch(error){
+
+console.error(error);
+
+alert(
+"❌ Error eliminando:\n"+
+(error.message||
+"Error desconocido")
+);
+
+}
+
+}
+
+
+function closeDeleteModal(){
+
+document
+.getElementById("deleteModal")
+.classList.remove("show");
+
+deleteModId=null;
+
+}
+
+
+/* =========================
+   MIS DESCARGAS
+========================= */
+
+async function loadDownloads(){
+
+const grid=
+document.getElementById("downloadsGrid");
+
+if(!currentUser){
+
+grid.innerHTML=
+'<div class="empty">🔒 Inicia sesión para ver tus descargas.</div>';
+
+return;
+
+}
+
+grid.innerHTML=
+'<div class="empty">⏳ Cargando descargas...</div>';
+
+try{
+
+const result=
+await supabaseClient
+.from("downloads")
+.select(`
+id,
+created_at,
+mods(*)
+`)
+.eq(
+"user_id",
+currentUser.id
+)
+.order(
+"created_at",
+{
+ascending:false
+}
+);
+
+if(result.error){
+
+console.error(result.error);
+
+grid.innerHTML=
+'<div class="empty">❌ No se pudieron cargar tus descargas.</div>';
+
+return;
+
+}
+
+const data=result.data||[];
+
+if(data.length===0){
+
+grid.innerHTML=
+'<div class="empty">📥 Todavía no tienes descargas.</div>';
+
+return;
+
+}
+
+grid.innerHTML="";
+
+data.forEach(function(item){
+
+if(item.mods){
+
+grid.appendChild(
+createModCard(
+item.mods,
+false
+)
+);
+
+}
+
+});
+
+}catch(error){
+
+console.error(error);
+
+grid.innerHTML=
+'<div class="empty">❌ Error de conexión.</div>';
+
+}
+
+}
+
+
+/* =========================
+   MIS MODS
+========================= */
+
+async function loadMyMods(){
+
+const grid=
+document.getElementById("myModsGrid");
+
+if(!currentUser){
+
+grid.innerHTML=
+'<div class="empty">🔒 Inicia sesión.</div>';
+
+return;
+
+}
+
+grid.innerHTML=
+'<div class="empty">⏳ Cargando tus mods...</div>';
+
+try{
+
+const result=
+await supabaseClient
+.from("mods")
+.select("*")
+.eq(
+"user_id",
+currentUser.id
+)
+.order(
+"created_at",
+{
+ascending:false
+}
+);
+
+if(result.error){
+
+console.error(result.error);
+
+grid.innerHTML=
+'<div class="empty">❌ No se pudieron cargar tus mods.</div>';
+
+return;
+
+}
+
+const data=result.data||[];
+
+if(data.length===0){
+
+grid.innerHTML=
+'<div class="empty">📦 Todavía no has subido contenido.</div>';
+
+return;
+
+}
+
+grid.innerHTML="";
+
+data.forEach(function(mod){
+
+grid.appendChild(
+createModCard(
+mod,
+true
+)
+);
+
+});
+
+}catch(error){
+
+console.error(error);
+
+grid.innerHTML=
+'<div class="empty">❌ Error de conexión.</div>';
+
+}
+
+}
+
+
+/* =========================
+   CERRAR SESIÓN
+========================= */
+
+async function logout(){
+
+try{
+
+if(supabaseClient){
+
+await supabaseClient
+.auth
+.signOut();
+
+}
+
+}catch(error){
+
+console.error(error);
+
+}
+
+currentUser=null;
+
+location.reload();
+
+}
+
+
+/* =========================
+   SESIÓN
+========================= */
+
+async function checkSession(){
+
+if(!supabaseClient)
+return;
+
+try{
+
+const result=
+await supabaseClient
+.auth
+.getSession();
+
+if(
+result.data&&
+result.data.session
+){
+
+currentUser=
+result.data.session.user;
+
+openApp();
+
+}
+
+}catch(error){
+
+console.error(error);
+
+}
+
+}
+
+
+/* =========================
+   INICIO
+========================= */
+
+if(initSupabase()){
+
+checkSession();
+
+}
+
+</script>
+
+</body>
+</html>
